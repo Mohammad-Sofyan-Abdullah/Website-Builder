@@ -1,6 +1,6 @@
 import os
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes.leads import router as leads_router
@@ -12,6 +12,7 @@ from routes.custom_links import router as custom_links_router
 from routes.general_sites import router as general_sites_router
 from routes.sheets_builder import router as sheets_builder_router
 from routes.scratch import router as scratch_router
+from services.auth import require_auth
 
 app = FastAPI(title="Website Generator API")
 
@@ -26,15 +27,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(leads_router)
-app.include_router(generate_router)
-app.include_router(history_router)
-app.include_router(active_router)
-app.include_router(dashboard_router)
-app.include_router(custom_links_router)
-app.include_router(general_sites_router)
-app.include_router(sheets_builder_router)
-app.include_router(scratch_router)
+_auth = [Depends(require_auth)]
+
+app.include_router(leads_router, dependencies=_auth)
+app.include_router(generate_router, dependencies=_auth)
+app.include_router(history_router, dependencies=_auth)
+app.include_router(active_router, dependencies=_auth)
+app.include_router(dashboard_router, dependencies=_auth)
+app.include_router(custom_links_router, dependencies=_auth)
+app.include_router(general_sites_router, dependencies=_auth)
+app.include_router(sheets_builder_router, dependencies=_auth)
+app.include_router(scratch_router, dependencies=_auth)
 
 
 @app.get("/health")
