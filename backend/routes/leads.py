@@ -7,6 +7,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from services.supabase_client import get_client
+from services.url_validator import validate_safe_url
 
 
 def _normalize_url(url: str) -> str:
@@ -169,7 +170,12 @@ def update_lead(lead_id: str, body: LeadUpdate):
 
     patch: dict = {}
     if body.company_website_url is not None:
-        patch["company_website_url"] = body.company_website_url.strip() or None
+        raw = body.company_website_url.strip()
+        if raw:
+            if not raw.startswith(("http://", "https://")):
+                raw = "https://" + raw
+            validate_safe_url(raw)
+        patch["company_website_url"] = raw or None
     if body.demo_site_url is not None:
         patch["demo_site_url"] = body.demo_site_url.strip() or None
 

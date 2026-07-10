@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from services.supabase_client import get_client
 from services.pipeline import OUTPUT_DIR, cancel_custom_run, run_custom_pipeline
 from services.html_chat_editor import edit_html_with_chat, rewrite_asset_urls
+from services.url_validator import validate_safe_url
 
 router = APIRouter(prefix="/custom-links", tags=["custom-links"])
 logger = logging.getLogger(__name__)
@@ -48,6 +49,7 @@ def _normalize_url(url: str) -> str:
     url = url.strip()
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
+    validate_safe_url(url)
     return url
 
 
