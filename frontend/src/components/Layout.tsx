@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Layout() {
   return (
@@ -19,6 +20,7 @@ export default function Layout() {
 }
 
 function Sidebar() {
+  const { signOut } = useAuth();
   return (
     <aside
       style={{
@@ -140,6 +142,40 @@ function Sidebar() {
 
       {/* Spacer */}
       <div style={{ flex: 1 }} />
+
+      {/* Sign out */}
+      <div style={{ margin: "0 12px 10px" }}>
+        <button
+          onClick={signOut}
+          style={{
+            width: "100%",
+            background: "transparent",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 8,
+            color: "#5a5a72",
+            fontSize: 12,
+            fontWeight: 500,
+            padding: "9px 12px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            fontFamily: "Inter, sans-serif",
+            transition: "color 0.15s, border-color 0.15s",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.color = "#f87171";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(248,113,113,0.25)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.color = "#5a5a72";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.07)";
+          }}
+        >
+          <span style={{ fontSize: 13 }}>↩</span>
+          Sign out
+        </button>
+      </div>
 
       {/* Bottom status card */}
       <div
